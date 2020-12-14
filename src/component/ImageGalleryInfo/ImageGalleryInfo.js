@@ -19,6 +19,10 @@ export default class ImageGalleryInfo extends Component {
     currentPage: 1,
   };
 
+  componentDidMount() {
+    this.searchMoreImages();
+  }
+
   componentDidUpdate(prevProps, prevState) {
     const prevName = prevProps.imageName;
     const nextName = this.props.imageName;
@@ -44,7 +48,7 @@ export default class ImageGalleryInfo extends Component {
       .catch(error => this.setState({ error, status: Status.REJECTED }));
   }
 
-  onLoadMore = () => {
+  onClickLoadMore = () => {
     this.setState(prevState => ({
       currentPage: prevState.currentPage + 1,
     }));
@@ -69,7 +73,7 @@ export default class ImageGalleryInfo extends Component {
       return (
         <div>
           <ImageGallery images={images.hits} />
-          <Button onLoadMore={this.onLoadMore} />
+          <Button onClickLoadMore={this.onClickLoadMore} />
         </div>
       );
     }
