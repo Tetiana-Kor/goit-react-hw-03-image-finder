@@ -2,12 +2,12 @@ import { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
 import Searchbar from './component/Searchbar';
 import ImageGalleryInfo from './component/ImageGalleryInfo';
+import Container from './component/Container';
 import './App.css';
 
 export default class App extends Component {
   state = {
     imageName: '',
-    page: 1,
   };
 
   handleSearchForm = imageName => {
@@ -15,15 +15,15 @@ export default class App extends Component {
   };
 
   render() {
-    const { imageName, page } = this.state;
+    const { imageName } = this.state;
 
     return (
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: 20 }}>
+      <Container>
         <Searchbar onSubmit={this.handleSearchForm} />
-        <ImageGalleryInfo imageName={imageName} currentPage={page} />
+        <ImageGalleryInfo imageName={imageName} page={this.props.currentPage} />
 
         <ToastContainer autoClose={3000} />
-      </div>
+      </Container>
     );
   }
 }

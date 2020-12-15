@@ -76,7 +76,7 @@ export default class ImageGalleryInfo extends Component {
   };
 
   render() {
-    const { images, status } = this.state;
+    const { images, status, currentPage } = this.state;
 
     if (status === Status.IDLE) {
       return (
@@ -108,7 +108,10 @@ export default class ImageGalleryInfo extends Component {
       return (
         <div>
           <ImageGallery images={images} />
-          <Button onClickLoadMore={this.onClickLoadMore} />
+          <Button
+            onClickLoadMore={this.onClickLoadMore}
+            currentPage={currentPage}
+          />
         </div>
       );
     }
