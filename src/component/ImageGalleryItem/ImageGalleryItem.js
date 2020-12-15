@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Modal from '../Modal';
 import s from './ImageGalleryItem.module.css';
 
 export default class ImageGalleryItem extends Component {
   state = {
     showModal: false,
+  };
+
+  static propTypes = {
+    src: PropTypes.string.isRequired,
+    alt: PropTypes.string.isRequired,
+    largeImageURL: PropTypes.string.isRequired,
   };
 
   toggleModal = () => {

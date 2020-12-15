@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Loader from 'react-loader-spinner';
 import ImageGallery from '../ImageGallery';
 import pixabayAPI from '../../service/pixabay-api';
 import Button from '../Button';
-// import { toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 const Status = {
   IDLE: 'idle',
@@ -19,15 +21,19 @@ export default class ImageGalleryInfo extends Component {
     currentPage: 1,
   };
 
-  componentDidMount() {
-    this.searchMoreImages();
-  }
+  static propTypes = {
+    imageName: PropTypes.string.isRequired,
+  };
 
   componentDidUpdate(prevProps, prevState) {
     const prevName = prevProps.imageName;
     const nextName = this.props.imageName;
     const prevPage = prevState.currentPage;
     const nextPage = this.state.currentPage;
+
+    if (prevName !== nextName) {
+      this.setState({ images: [], currentPage: 1 });
+    }
 
     if (prevName !== nextName || prevPage !== nextPage) {
       this.searchMoreImages(nextName, nextPage);
@@ -39,13 +45,28 @@ export default class ImageGalleryInfo extends Component {
 
     pixabayAPI
       .fetchImage(nextName, nextPage)
-      .then(images =>
+      .then(images => {
+        if (images.total === 0) {
+          toast.dark('No images. Please try another query!');
+          this.setState({ status: Status.REJECTED });
+
+          return;
+        }
+
         this.setState(prevState => ({
           images: [...prevState.images, ...images.hits],
           status: Status.RESOLVED,
-        })),
-      )
-      .catch(error => this.setState({ error, status: Status.REJECTED }));
+        }));
+      })
+      .catch(error => this.setState({ error, status: Status.REJECTED }))
+      .finally(() => {
+        setTimeout(() => {
+          window.scrollTo({
+            top: document.documentElement.scrollHeight,
+            behavior: 'smooth',
+          });
+        }, 500);
+      });
   }
 
   onClickLoadMore = () => {
@@ -55,24 +76,38 @@ export default class ImageGalleryInfo extends Component {
   };
 
   render() {
-    const { images, error, status } = this.state;
+    const { images, status } = this.state;
 
     if (status === Status.IDLE) {
-      return <div>Please, enter the value!</div>;
+      return (
+        <div
+          style={{ margin: '20px auto', textAlign: 'center', fontSize: '20px' }}
+        >
+          Please, enter a query!
+        </div>
+      );
     }
 
     if (status === Status.PENDING) {
-      return <div>Loading...</div>;
+      return (
+        <Loader
+          type="Circles"
+          color="#00BFFF"
+          height={100}
+          width={100}
+          timeout={3000} //3 secs
+        />
+      );
     }
 
     if (status === Status.REJECTED) {
-      return <h1>{error.message}</h1>;
+      return null;
     }
 
     if (status === Status.RESOLVED) {
       return (
         <div>
-          <ImageGallery images={images.hits} />
+          <ImageGallery images={images} />
           <Button onClickLoadMore={this.onClickLoadMore} />
         </div>
       );

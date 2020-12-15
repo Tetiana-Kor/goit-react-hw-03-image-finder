@@ -8,7 +8,7 @@ function fetchImage(name, page) {
     if (response.ok) {
       return response.json();
     }
-    return Promise.reject(new Error(`Don't exist the image ${name}`));
+    return Promise.reject(new Error('Invalid request'));
   });
 }
 
