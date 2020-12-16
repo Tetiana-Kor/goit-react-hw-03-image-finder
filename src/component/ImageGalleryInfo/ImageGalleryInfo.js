@@ -76,44 +76,78 @@ export default class ImageGalleryInfo extends Component {
   };
 
   render() {
-    const { images, status, currentPage } = this.state;
+    const { images, status } = this.state;
 
-    if (status === Status.IDLE) {
-      return (
-        <div
-          style={{ margin: '20px auto', textAlign: 'center', fontSize: '20px' }}
-        >
-          Please, enter a query!
-        </div>
-      );
-    }
+    return (
+      <>
+        {status === Status.IDLE && (
+          <div
+            style={{
+              margin: '20px auto',
+              textAlign: 'center',
+              fontSize: '20px',
+            }}
+          >
+            Please, enter a query!
+          </div>
+        )}
+        {images.length > 0 && (
+          <>
+            <ImageGallery images={images} />
+            <Button onClickLoadMore={this.onClickLoadMore} />
+          </>
+        )}
 
-    if (status === Status.PENDING) {
-      return (
-        <Loader
-          type="Circles"
-          color="#00BFFF"
-          height={100}
-          width={100}
-          timeout={3000} //3 secs
-        />
-      );
-    }
-
-    if (status === Status.REJECTED) {
-      return null;
-    }
-
-    if (status === Status.RESOLVED) {
-      return (
-        <div>
-          <ImageGallery images={images} />
-          <Button
-            onClickLoadMore={this.onClickLoadMore}
-            currentPage={currentPage}
-          />
-        </div>
-      );
-    }
+        {status === Status.PENDING && (
+          <div>
+            <Loader
+              type="Circles"
+              color="#00BFFF"
+              height={100}
+              width={100}
+              timeout={3000} //3 secs
+            />
+          </div>
+        )}
+        {status === Status.REJECTED && null}
+      </>
+    );
   }
 }
+
+//     if (status === Status.IDLE) {
+//       return (
+//         <div
+//           style={{ margin: '20px auto', textAlign: 'center', fontSize: '20px' }}
+//         >
+//           Please, enter a query!
+//         </div>
+//       );
+//     }
+
+//     if (status === Status.PENDING) {
+//       return (
+//         <Loader
+//           type="Circles"
+//           color="#00BFFF"
+//           height={100}
+//           width={100}
+//           timeout={3000} //3 secs
+//         />
+//       );
+//     }
+
+//     if (status === Status.REJECTED) {
+//       return null;
+//     }
+
+//     if (status === Status.RESOLVED) {
+//       return (
+//         <div>
+//           <ImageGallery images={images} />
+//           <Button onClickLoadMore={this.onClickLoadMore} />
+//         </div>
+//       );
+//     }
+//   }
+// }

@@ -20,7 +20,10 @@ export default class App extends Component {
     return (
       <Container>
         <Searchbar onSubmit={this.handleSearchForm} />
-        <ImageGalleryInfo imageName={imageName} page={this.props.currentPage} />
+        <ImageGalleryInfo
+          imageName={imageName}
+          currentPage={this.props.currentPage}
+        />
 
         <ToastContainer autoClose={3000} />
       </Container>
